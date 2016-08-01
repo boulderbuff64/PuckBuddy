@@ -1,49 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.erickson.crowdweather.MainActivity">
+    tools:context=".MainActivity"
+    tools:ignore="MergeRootFrame">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewCondition"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="179dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text" />
+    <com.erickson.crowdweather.PaintSurface
+        android:id="@+id/paint_surface"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true" />
 
     <Button
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SUNNY"
-        android:id="@+id/buttonSunny"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@+id/textViewCondition"
-        android:layout_marginEnd="84dp" />
+        android:layout_alignBottom="@+id/paint_surface"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/transparent"
+        android:text="+" />
 
     <Button
+        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FOGGY"
-        android:id="@+id/buttonFoggy"
-        android:layout_alignTop="@+id/buttonSunny"
-        android:layout_toEndOf="@+id/textViewCondition"
-        android:layout_marginStart="87dp" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Temperature"
-        android:id="@+id/TempText"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="135dp" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:text="+" />
 
 </RelativeLayout>
