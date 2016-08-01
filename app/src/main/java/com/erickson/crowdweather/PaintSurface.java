@@ -3,7 +3,6 @@ package com.erickson.crowdweather;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.support.v4.view.VelocityTrackerCompat;
@@ -53,22 +52,15 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
     static float Pi = (float) 3.141593;
     int first = 1;
 
-    Puck[] pucks = new Puck[5];
+    Puck[] pucks = new Puck[3];
 
     static int[] touchCount = new int[12];
-
     static int fingerCount = 0;
 
     int glow = 50;
-    int delay = 25;
 
     float[] x = new float[20];
     float[] y = new float[20];
-
-    int timerTut = 0;
-
-    //Bitmap pic = BitmapFactory.decodeResource(getResources(), R.drawable.game_over);
-    //Bitmap pic = BitmapFactory.decodeResource(getResources(), R.drawable.planet2);
 
     private VelocityTracker mVelocityTracker = null;
 
@@ -189,21 +181,25 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
         while (mFlag) {
             // Check whether the object holds a valid surface
 
-            if(first==1){
+            if (first == 1) {
                 for (int i = 0; i < pucks.length; i++) {
                     pucks[i] = new Puck();
                     pucks[i].start(ScreenX, ScreenY, (int) (Math.random() * ScreenX / 50 + 2));
                     pucks[i].setColor((127 * i + 254) % 255, (86 * i + 250) % 255, (192 * i) % 255);
-                    //Log.d("First", "Pucks initiate");
+                    pucks[i].Vx = (float) (ScreenX / 250 * (2 * Math.random() - 1));
+                    pucks[i].Vy = (float) (ScreenY / 240 * (2 * Math.random() - 1));
+                    Log.d("First", "Pucks initiate");
                 }
                 pucks[pucks.length - 1].rad = 20;
                 pucks[0].rad = 20;
 
-                first=0;
+
+                first = 0;
             }
 
             if (!mHolder.getSurface().isValid())
                 continue;
+
             Canvas canvas = mHolder.lockCanvas(); // Start editing the surface
             canvas.drawARGB(255 - glow, 0, 0, 0); // Background
             canvas.drawCircle((int) Xh, (int) Yh, 100, playerPaint); // player paddle
@@ -211,13 +207,13 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
             canvas.drawCircle(100, 100, 50, playerPaint);
 
             for (int i = 0; i < pucks.length; i++) {
+                pucks[i].addSpeed();
+                pucks[i].stuckInCorner();
+                pucks[i].edgeBounce(true);
+                pucks[i].checkPaddleBounce(Xh, Yh, Vxh, Vyh, (int) Rh); //Had issues
+                pucks[i].speedLimit(maxV, dragV); //Had issues
                 canvas.drawCircle((int) pucks[i].x, (int) pucks[i].y, pucks[i].rad, pucks[i].Paint);
             }
-
-
-
-
-
 
 
             mHolder.unlockCanvasAndPost(canvas); // Finish editing the canvas and show to the user

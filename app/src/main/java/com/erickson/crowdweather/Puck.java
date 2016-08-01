@@ -10,12 +10,8 @@ import android.util.Log;
 public class Puck {
     float x;
     float y;
-    float x2;
-    float y2;
     float Vx;
     float Vy;
-    float Vx2;
-    float Vy2;
     int width;
     int height;
     int edge;
@@ -34,12 +30,8 @@ public class Puck {
         rad = Radius;
         x = (float) (Math.random() * Width);
         y = (float) (Math.random() * Height);
-        x2 = width / 2;
-        y2 = height / 2;
         Vx = 0;
         Vy = 0;
-        Vx2 = 0;
-        Vy2 = 0;
         theta = (float) (Math.random() * 2 * Pi);
         Paint.setStrokeWidth(5);
     }
@@ -72,9 +64,6 @@ public class Puck {
         //Log.d("Puck", "addSpeed");
         x = x + Vx; //add X velocity
         y = y + Vy; //add Y velocity
-        x2 = x2 + Vx2; //line
-        y2 = y2 + Vy2; //line
-
     }
 
     public void edgeBounce(boolean bounce) {
@@ -218,35 +207,6 @@ public class Puck {
         float Y = (float) (Math.abs((Fy - Gy)) / 2 * Math.sin(theta)) + shiftY;
 
         Follow(X, Y, power);
-    }
-
-    public void Ellipse2(float Fx, float Fy, float Gx, float Gy, float power, double dT) {
-        //Log.d("Puck", "Ellipse2");
-        theta2 = (float) ((theta2 + dT) % (2 * Pi));
-        float shiftX, shiftY;
-        //if (Fx<Gx){ shiftX=Fx; } else {shiftX=Gx;}
-        //if (Fy<Gy){ shiftY=Fy; } else {shiftY=Gy;}
-        shiftX = (Fx + Gx) / 2;
-        shiftY = (Fy + Gy) / 2;
-        float X = (float) (Math.abs((Fx - Gx)) / 2 * Math.cos(theta2)) + shiftX;
-        float Y = (float) (Math.abs((Fy - Gy)) / 2 * Math.sin(theta2)) + shiftY;
-
-        double thta = 0;
-        float dist = scalar(X - x2, Y - y2);
-        float dX = X - x2;
-        float dY = Y - y2;
-
-        if (dist >= power) {
-            //Vx = (float) (Power * Math.sin((X - x) / dist));
-            //Vy = (float) ((Y - y) / Math.abs(Y - y) * Power * Math.cos((Y - y) / dist));
-
-            thta = Math.atan(dX / dY);
-            Vx2 = (float) (sign(dY) * power * Math.sin(thta) + Vx2) / 2;
-            Vy2 = (float) (sign(dY) * power * Math.cos(thta) + Vy2) / 2;
-        } else {
-            Vx2 = dX;
-            Vy2 = dY;
-        }
     }
 
     public void ForceMove(float A, float B, float X, float Y, float Power) {
