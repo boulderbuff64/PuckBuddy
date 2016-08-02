@@ -20,17 +20,16 @@ import java.util.ArrayList;
 
 public class PaintSurface extends SurfaceView implements Runnable, OnTouchListener {
 
-    public static int player = 0;
+    public static int player = 0; // determines which color you are controling, initially start with blue
     public ArrayList<Double> shared_x = new ArrayList<Double>();
     public ArrayList<Double> shared_y = new ArrayList<Double>();
     private Firebase fbRef_x;
     private Firebase fbRef_y;
 
-
-    SurfaceHolder mHolder; // Surface holder allows to control and monitor the surface
-    Thread mThread; // A thread where the painting activities are taking place
-    boolean mFlag = false; // A flag which controls the start and stop of the
-    static Canvas canvas; // create the canvas to edit
+    SurfaceHolder mHolder;
+    Thread mThread;
+    boolean mFlag = false;
+    static Canvas canvas;
 
     Paint playerPaint1;
     Paint playerPaint2;
@@ -174,8 +173,7 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
                 continue;
             Canvas canvas = mHolder.lockCanvas(); // Start editing the surface
 
-
-            if (first == 1) {
+            if (first == 1) { //Inialize everything
                 ScreenX = canvas.getWidth();
                 ScreenY = canvas.getHeight();
                 for (int i = 0; i < pucks.length; i++) {
@@ -197,7 +195,6 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
             }
 
             canvas.drawARGB(255 - glow, 0, 0, 0); // Background
-            //canvas.drawCircle((int) (mX*ScreenX), (int) (mY*ScreenY), 50, playerPaint1); // player paddle
 
             //for (int i = 0; i < shared_x.size(); i++) {
             canvas.drawCircle(shared_x.get(0).floatValue() * ScreenX, shared_y.get(0).floatValue() * ScreenY, radius, playerPaint1);
@@ -219,6 +216,7 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
             }
 
 
+            // Update all of the pucks //
             for (int i = 0; i < pucks.length; i++) {
                 pucks[i].addSpeed();
                 pucks[i].stuckInCorner();

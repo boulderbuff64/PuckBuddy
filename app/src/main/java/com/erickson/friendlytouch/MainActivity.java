@@ -1,16 +1,11 @@
 package com.erickson.friendlytouch;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -19,14 +14,11 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 
-//import android.support.v4.view.GestureDetectorCompat;
-
-public class MainActivity extends AppCompatActivity implements GestureDetector.OnGestureListener, OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private Firebase mRef_x;
     private Firebase mRef_y;
     PaintSurface mPaintSurface;
-    Draw drawView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +30,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-        mPaintSurface = (PaintSurface) findViewById(R.id.paint_surface); // Getting reference to the PaintView R.layout.activity_main
+        mPaintSurface = (PaintSurface) findViewById(R.id.paint_surface);
         mPaintSurface.setOnTouchListener(mPaintSurface);
-        drawView = new Draw(this);
-        drawView.setBackgroundColor(Color.BLACK);
     }
 
 
@@ -100,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
@@ -127,38 +116,4 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onDown(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
-    }
-
-    @Override
-    public void onClick(View v) {
-
-    }
 }
