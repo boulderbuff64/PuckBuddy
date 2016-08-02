@@ -7,11 +7,19 @@
     tools:context=".MainActivity"
     tools:ignore="MergeRootFrame">
 
-    <com.erickson.crowdweather.PaintSurface
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
+
+    <com.erickson.friendlytouch.PaintSurface
         android:id="@+id/paint_surface"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/my_toolbar" />
 
     <Button
         android:id="@+id/button1"

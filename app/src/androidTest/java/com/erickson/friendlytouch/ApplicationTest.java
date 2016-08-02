@@ -1,4 +1,4 @@
-package com.erickson.crowdweather;
+package com.erickson.friendlytouch;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

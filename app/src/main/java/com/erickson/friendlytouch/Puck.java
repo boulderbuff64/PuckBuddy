@@ -1,4 +1,4 @@
-package com.erickson.crowdweather;
+package com.erickson.friendlytouch;
 /**
  * Created by ASErickson on 5/26/16.
  */

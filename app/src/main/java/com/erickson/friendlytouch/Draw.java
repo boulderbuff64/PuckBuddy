@@ -1,4 +1,4 @@
-package com.erickson.crowdweather;
+package com.erickson.friendlytouch;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
