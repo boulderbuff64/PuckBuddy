@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class PaintSurface extends SurfaceView implements Runnable, OnTouchListener {
 
-    public ArrayList<Long> shared_x = new ArrayList<Long>();
-    public ArrayList<Long> shared_y = new ArrayList<Long>();
+    public ArrayList<Double> shared_x = new ArrayList<Double>();
+    public ArrayList<Double> shared_y = new ArrayList<Double>();
 
     SurfaceHolder mHolder; // Surface holder allows to control and monitor the surface
     Thread mThread; // A thread where the painting activities are taking place
@@ -149,6 +149,11 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
                 _handler.removeCallbacks(_longPressed);
                 mX = event.getX();
                 mY = event.getY();
+                Firebase mRef_x = new Firebase("https://crowdweather-414b6.firebaseio.com/x/0");
+                Firebase mRef_y = new Firebase("https://crowdweather-414b6.firebaseio.com/y/0");
+                mRef_x.setValue(mX);
+                mRef_y.setValue(mY);
+
                 Xh = mX;
                 Yh = mY;
                 fingerCount = event.getPointerCount();
@@ -201,13 +206,12 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
                     pucks[i].Vy = (float) (ScreenY / 240 * (2 * Math.random() - 1));
                     Log.d("First", "Pucks initiate");
                 }
-                for (int i=shared_x.size(); i<=4; i++){
-                    shared_x.add(0l);
-                    shared_y.add(0l);
+                for (int i = shared_x.size(); i <= 4; i++) {
+                    shared_x.add(0.0);
+                    shared_y.add(0.0);
                 }
                 pucks[pucks.length - 1].rad = 20;
                 pucks[0].rad = 20;
-
 
                 first = 0;
             }
@@ -220,11 +224,10 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
             canvas.drawCircle((int) Xh, (int) Yh, 100, playerPaint); // player paddle
 
 
-            for (int i = 0; i<shared_x.size(); i++) {
-                canvas.drawCircle(shared_x.get(i), shared_y.get(i), 50, playerPaint);
+            for (int i = 0; i < shared_x.size(); i++) {
+                canvas.drawCircle(shared_x.get(i).floatValue(), shared_y.get(i).floatValue(), 50, playerPaint);
+
             }
-            //shared_x.set(0, (long) Xh);
-            //shared_y.set(0, (long) Yh);
 
 
             for (int i = 0; i < pucks.length; i++) {
@@ -235,8 +238,6 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
                 pucks[i].speedLimit(maxV, dragV); //Had issues
                 canvas.drawCircle((int) pucks[i].x, (int) pucks[i].y, pucks[i].rad, pucks[i].Paint);
             }
-
-
 
 
             mHolder.unlockCanvasAndPost(canvas); // Finish editing the canvas and show to the user
