@@ -117,7 +117,7 @@ public class Puck {
             float[] temp = bounce(Vx, Vy, (Xh - x), (Yh - y));
             Vx = temp[0] + Vxh / VeloScalar;
             Vy = temp[1] + Vyh / VeloScalar;
-            //Log.d("Vh= ", Vxh / VeloScalar + "  " + Vyh / VeloScalar);
+            Log.d("Vh= ", Vxh / VeloScalar + "  " + Vyh / VeloScalar);
             //canvas.drawLine(Xp, Yp, Xp + Vxp * 100, Yp + Vyp * 100, playerPaint); // line(Xp,Yp,Xp+Vxp*40,Yp+Vyp*40);
 
             x = x + Vx;

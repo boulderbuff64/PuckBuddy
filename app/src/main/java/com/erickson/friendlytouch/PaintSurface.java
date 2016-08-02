@@ -4,6 +4,7 @@ package com.erickson.friendlytouch;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.v4.view.VelocityTrackerCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -45,31 +46,20 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
     static int ScreenX = 800;
     static int ScreenY = 1200;
 
-    float maxV = 15; // Speed Limit
-    float dragV = 5; // Puck Feel drag above this spped
-    int VeloScalar = 30;
-
-    float Vxp = 1;
-    float Vyp = 1;
-    float Rp; // radius of puck
-    float Rh; // radius of paddle
-    float lastVxh = 0;
-    float lastVyh = 0;
-    static float Vxh = 0;
-    static float Vyh = 0;
-    float lastVxo = 0;
-    float lastVyo = 0;
+    float radius = 50; // radius of paddle
     static float Pi = (float) 3.141593;
     int first = 1;
+    float Vxp = 1;
+    float Vyp = 1;
+    static float Vxh = 0;
+    static float Vyh = 0;
+    float maxV = 15; // Speed Limit
+    float dragV = 3; // Puck Feel drag above this speed
 
     private Firebase mRef;
     private Firebase mRefTemp;
 
-
     Puck[] pucks = new Puck[5];
-
-    static int[] touchCount = new int[12];
-    static int fingerCount = 0;
 
     int glow = 250;
 
@@ -113,39 +103,63 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
             case MotionEvent.ACTION_DOWN:
                 Xbegin = event.getX();
                 Ybegin = event.getY();
+                if (mVelocityTracker == null) {
+                    // Retrieve a new VelocityTracker object to watch the velocity of a motion.
+                    mVelocityTracker = VelocityTracker.obtain();
+                } else {
+                    // Reset the velocity tracker back to its initial state.
+                    mVelocityTracker.clear();
+                }
+                // Add a user's movement to the tracker.
+                mVelocityTracker.addMovement(event);
+                if (mVelocityTracker == null) {
+                    // Retrieve a new VelocityTracker object to watch the velocity of a motion.
+                    mVelocityTracker = VelocityTracker.obtain();
+                } else {
+                    // Reset the velocity tracker back to its initial state.
+                    mVelocityTracker.clear();
+                }
                 break;
+
             case MotionEvent.ACTION_MOVE:
-                mX = event.getX()/ScreenX;
-                mY = event.getY()/ScreenY;
+                mX = event.getX() / ScreenX;
+                mY = event.getY() / ScreenY;
                 //Log.d("motion","X="+mX+" Y="+mY);
-                if (player==0) {
+                if (player == 0) {
                     fbRef_x = new Firebase("https://crowdweather-414b6.firebaseio.com/x/0");
                     fbRef_y = new Firebase("https://crowdweather-414b6.firebaseio.com/y/0");
                     fbRef_x.setValue(mX);
                     fbRef_y.setValue(mY);
                 }
-                if (player==1) {
+                if (player == 1) {
                     fbRef_x = new Firebase("https://crowdweather-414b6.firebaseio.com/x/1");
                     fbRef_y = new Firebase("https://crowdweather-414b6.firebaseio.com/y/1");
                     fbRef_x.setValue(mX);
                     fbRef_y.setValue(mY);
                 }
-                if (player==2) {
+                if (player == 2) {
                     fbRef_x = new Firebase("https://crowdweather-414b6.firebaseio.com/x/2");
                     fbRef_y = new Firebase("https://crowdweather-414b6.firebaseio.com/y/2");
                     fbRef_x.setValue(mX);
                     fbRef_y.setValue(mY);
                 }
-                if (player==3) {
+                if (player == 3) {
                     fbRef_x = new Firebase("https://crowdweather-414b6.firebaseio.com/x/3");
                     fbRef_y = new Firebase("https://crowdweather-414b6.firebaseio.com/y/3");
                     fbRef_x.setValue(mX);
                     fbRef_y.setValue(mY);
                 }
+                mVelocityTracker.addMovement(event);
+                mVelocityTracker.computeCurrentVelocity(1000);
+                Vxh = VelocityTrackerCompat.getXVelocity(mVelocityTracker, 0);
+                Vyh = VelocityTrackerCompat.getYVelocity(mVelocityTracker, 0);
+
                 break;
             case MotionEvent.ACTION_UP:
                 Xend = event.getX();
                 Yend = event.getY();
+                Vxh=0;
+                Vyh=0;
                 break;
         }
         return true;
@@ -173,8 +187,8 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
                     Log.d("First", "Pucks initiate");
                 }
                 for (int i = shared_x.size(); i <= 4; i++) {
-                    shared_x.add(1.0/(i+2));
-                    shared_y.add(1.0/(i+2));
+                    shared_x.add(1.0 / (i + 2));
+                    shared_y.add(1.0 / (i + 2));
                 }
                 pucks[pucks.length - 1].rad = 30;
                 pucks[0].rad = 40;
@@ -183,21 +197,37 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
             }
 
             canvas.drawARGB(255 - glow, 0, 0, 0); // Background
-            canvas.drawCircle((int) (mX*ScreenX), (int) (mY*ScreenY), 50, playerPaint1); // player paddle
+            //canvas.drawCircle((int) (mX*ScreenX), (int) (mY*ScreenY), 50, playerPaint1); // player paddle
 
             //for (int i = 0; i < shared_x.size(); i++) {
-                canvas.drawCircle(shared_x.get(0).floatValue()*ScreenX, shared_y.get(0).floatValue()*ScreenY, 50, playerPaint1);
-                canvas.drawCircle(shared_x.get(1).floatValue()*ScreenX, shared_y.get(1).floatValue()*ScreenY, 50, playerPaint2);
-                canvas.drawCircle(shared_x.get(2).floatValue()*ScreenX, shared_y.get(2).floatValue()*ScreenY, 50, playerPaint3);
-                canvas.drawCircle(shared_x.get(3).floatValue()*ScreenX, shared_y.get(3).floatValue()*ScreenY, 50, playerPaint4);
+            canvas.drawCircle(shared_x.get(0).floatValue() * ScreenX, shared_y.get(0).floatValue() * ScreenY, radius, playerPaint1);
+            canvas.drawCircle(shared_x.get(1).floatValue() * ScreenX, shared_y.get(1).floatValue() * ScreenY, radius, playerPaint2);
+            canvas.drawCircle(shared_x.get(2).floatValue() * ScreenX, shared_y.get(2).floatValue() * ScreenY, radius, playerPaint3);
+            canvas.drawCircle(shared_x.get(3).floatValue() * ScreenX, shared_y.get(3).floatValue() * ScreenY, radius, playerPaint4);
             //}
+
+            // Speed Limit
+            float VeloMag = scalar(Vxp, Vyp);
+            if (VeloMag > maxV) {
+                Vxp = Vxp / VeloMag * maxV;
+                Vyp = Vyp / VeloMag * maxV;
+            }
+            if (VeloMag > dragV) {
+                Vxp = (float) (Vxp * 0.98);
+                Vyp = (float) (Vyp * 0.98);
+                // System.out.println(" Vxp=" + Vxp + " Vyp=" + Vyp);
+            }
+
 
             for (int i = 0; i < pucks.length; i++) {
                 pucks[i].addSpeed();
                 pucks[i].stuckInCorner();
                 pucks[i].edgeBounce(true);
-                pucks[i].checkPaddleBounce((float)mX*ScreenX, (float)mY*ScreenY, Vxh, Vyh, (int) Rh); //Had issues
-                //pucks[i].speedLimit(maxV, dragV); //Had issues
+                pucks[i].checkPaddleBounce(shared_x.get(0).floatValue() * ScreenX, shared_y.get(0).floatValue() * ScreenY, Vxh, Vyh, (int) radius); //Had issues
+                pucks[i].checkPaddleBounce(shared_x.get(1).floatValue() * ScreenX, shared_y.get(1).floatValue() * ScreenY, Vxh, Vyh, (int) radius); //Had issues
+                pucks[i].checkPaddleBounce(shared_x.get(2).floatValue() * ScreenX, shared_y.get(2).floatValue() * ScreenY, Vxh, Vyh, (int) radius); //Had issues
+                pucks[i].checkPaddleBounce(shared_x.get(3).floatValue() * ScreenX, shared_y.get(3).floatValue() * ScreenY, Vxh, Vyh, (int) radius); //Had issues
+                pucks[i].speedLimit(maxV, dragV); //Had issues
                 canvas.drawCircle((int) pucks[i].x, (int) pucks[i].y, pucks[i].rad, pucks[i].Paint);
             }
 
@@ -227,7 +257,6 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
         // Bounce);
         return New;
     }
-
 
 
     public static float scalar(float X, float Y) {
