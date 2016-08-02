@@ -16,12 +16,15 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.util.ArrayList;
+
 //import android.support.v4.view.GestureDetectorCompat;
 
 public class MainActivity extends Activity implements GestureDetector.OnGestureListener, OnClickListener {
 
     private Firebase mRef;
-    private Firebase mRefTemp;
+    private Firebase mRef_x;
+    private Firebase mRef_y;
     PaintSurface mPaintSurface;
     Draw drawView;
 
@@ -42,23 +45,39 @@ public class MainActivity extends Activity implements GestureDetector.OnGestureL
     @Override
     protected void onStart() {
         super.onStart();
-        //mRef = new Firebase("http://androidqs-firebaseio-demo.com/condition");
-        mRef = new Firebase("https://burning-inferno-8506.firebaseio.com/condition");
-        mRefTemp = new Firebase("https://burning-inferno-8506.firebaseio.com/temp");
-        //mRef = new Firebase("https://project-7467768797914907035.firebaseio.com/temp");
+        mRef_x = new Firebase("https://crowdweather-414b6.firebaseio.com/x");
+        mRef_y = new Firebase("https://crowdweather-414b6.firebaseio.com/y");
 
-        mRef.addValueEventListener(new ValueEventListener() {
+        mRef_x.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String newCondition = (String) dataSnapshot.getValue();
-                //mTextCondition.setText(newCondition);
+                mPaintSurface.shared_x = (ArrayList<Long>) dataSnapshot.getValue();
+                Log.d("firebase-change",String.valueOf(mPaintSurface.shared_x));
             }
-
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-
+                mPaintSurface.shared_x.set(0,0l);
+                mPaintSurface.shared_x.set(1,0l);
+                mPaintSurface.shared_x.set(2,0l);
+                mPaintSurface.shared_x.set(3,0l);
+                Log.d("firebase-cancel",String.valueOf(mPaintSurface.shared_x));
+                Log.e("firebase-cancel","", firebaseError.toException());
             }
         });
+        mRef_y.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mPaintSurface.shared_y = (ArrayList<Long>) dataSnapshot.getValue();
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                mPaintSurface.shared_y.set(0,0l);
+                mPaintSurface.shared_y.set(1,0l);
+                mPaintSurface.shared_y.set(2,0l);
+                mPaintSurface.shared_y.set(3,0l);
+            }
+        });
+
     }
 
     protected void onResume() {

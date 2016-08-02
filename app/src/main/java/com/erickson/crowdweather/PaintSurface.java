@@ -15,7 +15,14 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import com.firebase.client.Firebase;
+
+import java.util.ArrayList;
+
 public class PaintSurface extends SurfaceView implements Runnable, OnTouchListener {
+
+    public ArrayList<Long> shared_x = new ArrayList<Long>();
+    public ArrayList<Long> shared_y = new ArrayList<Long>();
 
     SurfaceHolder mHolder; // Surface holder allows to control and monitor the surface
     Thread mThread; // A thread where the painting activities are taking place
@@ -51,6 +58,10 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
     float lastVyo = 0;
     static float Pi = (float) 3.141593;
     int first = 1;
+
+    private Firebase mRef;
+    private Firebase mRefTemp;
+
 
     Puck[] pucks = new Puck[3];
 
@@ -190,6 +201,10 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
                     pucks[i].Vy = (float) (ScreenY / 240 * (2 * Math.random() - 1));
                     Log.d("First", "Pucks initiate");
                 }
+                for (int i=shared_x.size(); i<=4; i++){
+                    shared_x.add(0l);
+                    shared_y.add(0l);
+                }
                 pucks[pucks.length - 1].rad = 20;
                 pucks[0].rad = 20;
 
@@ -204,7 +219,13 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
             canvas.drawARGB(255 - glow, 0, 0, 0); // Background
             canvas.drawCircle((int) Xh, (int) Yh, 100, playerPaint); // player paddle
 
-            canvas.drawCircle(100, 100, 50, playerPaint);
+
+            for (int i = 0; i<shared_x.size(); i++) {
+                canvas.drawCircle(shared_x.get(i), shared_y.get(i), 50, playerPaint);
+            }
+            //shared_x.set(0, (long) Xh);
+            //shared_y.set(0, (long) Yh);
+
 
             for (int i = 0; i < pucks.length; i++) {
                 pucks[i].addSpeed();
@@ -214,6 +235,8 @@ public class PaintSurface extends SurfaceView implements Runnable, OnTouchListen
                 pucks[i].speedLimit(maxV, dragV); //Had issues
                 canvas.drawCircle((int) pucks[i].x, (int) pucks[i].y, pucks[i].rad, pucks[i].Paint);
             }
+
+
 
 
             mHolder.unlockCanvasAndPost(canvas); // Finish editing the canvas and show to the user
